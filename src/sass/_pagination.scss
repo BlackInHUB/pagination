@@ -1,0 +1,29 @@
+.section {
+    padding-top: 40px;
+}
+
+.pag-container {
+    display: flex;
+    justify-content: center;
+}
+
+.pag-btn {
+    padding: 10px 15px;
+    font-weight: bold;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+.pag-btn:not(:last-child) {
+    margin-right: 5px;
+}
+
+.pag-btn-active {
+    color: white;
+    border-color: transparent;
+    background-color: orangered;
+}
+
+.unvisible {
+    display: none;
+}
