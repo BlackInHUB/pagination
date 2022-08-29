@@ -1,60 +1,58 @@
-import pagination from './pagination';
 const pagContainer = document.querySelector('.pag-container');
 
-function createPagination(totalPages, pagesShown, startPage) {
-  const startBtnsMarkup = `<div class="left-constrols-container"><div class="pag-btn to-start">На початок</div><div id="${pagesShown}" class="pag-btn move-left">...</div></div><div class="pag-btns-container"></div><div class="right-controls-container"><div id="${pagesShown}" class="pag-btn move-right">...</div><div class="pag-btn to-end">В кінець</div></div>`;
+function createPagination(totalPages, pagesShown) {
+  const startBtnsMarkup = `<div class="left-controls-container"><div class="left-control-btn to-start">На початок</div><div id="${pagesShown}" class="left-control-btn move-left">...</div></div><div class="pag-btns-container"></div><div class="right-controls-container"><div id="${pagesShown}" class="right-control-btn move-right">...</div><div class="right-control-btn to-end">В кінець</div></div>`;
 
   pagContainer.innerHTML = startBtnsMarkup;
 
   const pagBtnsContainer = document.querySelector('.pag-btns-container');
-  const letftControlsContainer = document.querySelector(
-    '.letft-controls-container'
-  );
-  const rightControlsContainer = document.querySelector(
-    '.right-controls-container'
-  );
 
-  let btnsArray = [];
-  let current_page = startPage;
-  let firstPage = startPage;
-  let lastPage = pagesShown;
+  const moveRightBtn = document.querySelector('.move-right');
+  const moveLeftBtn = document.querySelector('.move-left');
+  const toStartBtn = document.querySelector('.to-start');
+  const toEndBtn = document.querySelector('.to-end');
 
-  console.log(firstPage, lastPage);
+  let current_page = 0;
 
-  function createBtnsArray(value) {
-    for (let i = 1; i <= value; i += 1) {
-      btnsArray.push(i);
-    }
-    return btnsArray;
-  }
-
-  createBtnsArray(totalPages);
-
-  const numberedBtnsContainer = document.querySelector('.pag-btns-container');
-
-  function appendPagBtnsMarkup(array, counter, page) {
-    pagBtnsContainer.innerHTML = '';
-    // page--;
-
-    let start = counter * page;
-    let end = start + counter;
-    let btnsToRender = array.slice(start, end);
-
-    for (let i = 0; i < btnsToRender.length; i += 1) {
-      let btn = array[i];
-      let btnMarkup = `<div class="pag-btn numbered-peg-btn data-action="listPage">${btn}</div>`;
-
-      numberedBtnsContainer.insertAdjacentHTML('beforeend', btnMarkup);
-
-      const numberedBtnsArray = document.querySelectorAll('.numbered-peg-btn');
-
-      numberedBtnsArray[0].classList.add('pag-btn-active');
-    }
-  }
-
-  appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
+  moveLeftBtn.classList.add('unvisible');
+  toStartBtn.classList.add('unvisible');
 
   pagBtnsContainer.addEventListener('click', onBtnClick);
+
+  function createBtnsArray(value) {
+    let array = [];
+    for (let i = 1; i <= value; i += 1) {
+      array.push(i);
+    }
+    return array;
+  }
+
+  const btnsArray = createBtnsArray(totalPages);
+  if (btnsArray.length <= pagesShown) {
+    moveRightBtn.classList.add('unvisible');
+  }
+
+  function appendStartPagBtnsMarkup(btnsArray, pagesShown, start) {
+    pagBtnsContainer.innerHTML = '';
+
+    let end = start + pagesShown;
+    let btnsToRender = btnsArray.slice(start, end);
+
+    const btnsMarkup = btnsToRender
+      .map(
+        btn =>
+          `<div class="pag-btn numbered-peg-btn data-action="listPage">${btn}</div>`
+      )
+      .join('');
+
+    pagBtnsContainer.innerHTML = btnsMarkup;
+
+    const numberedBtnsArray = document.querySelectorAll('.numbered-peg-btn');
+
+    numberedBtnsArray[0].classList.add('pag-btn-active');
+  }
+
+  appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
 
   function onBtnClick(evt) {
     const activeBtn = document.querySelector('.pag-btn-active');
@@ -65,17 +63,65 @@ function createPagination(totalPages, pagesShown, startPage) {
     evt.target.classList.add('pag-btn-active');
   }
 
-  rightControlsContainer.addEventListener('click', onRightControlsClick);
+  moveRightBtn.addEventListener('click', onMoveRightBtnClick);
+  moveLeftBtn.addEventListener('click', onMoveLeftBtnClick);
 
-  function onRightControlsClick(evt) {
-    console.log(evt.target);
+  function onMoveRightBtnClick() {
+    toStartBtn.classList.remove('unvisible');
+    current_page += pagesShown;
 
-    if (evt.target.classList.contains('.move-right')) {
-      current_page = startPage + pagesShown;
-
-      appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
+    if (current_page >= pagesShown * 2) {
+      moveLeftBtn.classList.remove('unvisible');
     }
+
+    if (current_page + pagesShown * 2 > btnsArray.length) {
+      moveRightBtn.classList.add('unvisible');
+    }
+
+    if (current_page + pagesShown > btnsArray.length) {
+      toEndBtn.classList.add('unvisible');
+    }
+
+    appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
+    console.log(current_page);
   }
+
+  function onMoveLeftBtnClick() {
+    current_page -= pagesShown;
+    moveRightBtn.classList.remove('unvisible');
+    toEndBtn.classList.remove('unvisible');
+
+    if (current_page <= pagesShown) {
+      moveLeftBtn.classList.add('unvisible');
+    }
+
+    if (current_page <= 0) {
+      toStartBtn.classList.add('unvisible');
+    }
+
+    appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
+  }
+
+  toEndBtn.addEventListener('click', function () {
+    current_page = btnsArray.length - pagesShown;
+
+    toStartBtn.classList.remove('unvisible');
+    moveLeftBtn.classList.remove('unvisible');
+    toEndBtn.classList.add('unvisible');
+    moveRightBtn.classList.add('unvisible');
+
+    appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
+  });
+
+  toStartBtn.addEventListener('click', function () {
+    current_page = 0;
+
+    toStartBtn.classList.add('unvisible');
+    moveLeftBtn.classList.add('unvisible');
+    toEndBtn.classList.remove('unvisible');
+    moveRightBtn.classList.remove('unvisible');
+    appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
+  });
 }
 
-createPagination(20, 5, 1);
+createPagination(22, 5);
