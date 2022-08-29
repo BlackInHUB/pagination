@@ -1,82 +1,62 @@
 import pagination from './pagination';
 const pagContainer = document.querySelector('.pag-container');
 
-function createPagination(totalPages, pagesShown) {
-  const startBtnMarkup = `<div class="pag-btn to-start">На початок</div>`;
-  const moveLeftBtnMarkup = `<div id="${pagesShown}" class="pag-btn move-left">...</div>`;
-  const firstBtnMarkup = `<div class="pag-btn unvisible pag-btn-active" data-action="listPage">1</div>`;
-  const moveRightBtnMarkup = `<div id="${pagesShown}" class="pag-btn move-right">...</div>`;
-  const endBtnMarkup = `<div class="pag-btn to-end">В кінець</div>`;
-  let pagBtnsArray = [];
+function createPagination(totalPages, pagesShown, startPage) {
+  const startBtnsMarkup = `<div class="pag-btn to-start">На початок</div><div id="${pagesShown}" class="pag-btn move-left">...</div><div class="pag-btns-container"></div><div id="${pagesShown}" class="pag-btn move-right">...</div><div class="pag-btn to-end">В кінець</div>`;
 
-  function makeBtnsArray(totalPages) {
-    for (let i = 2; i <= totalPages; i += 1) {
-      pagBtnsArray.push(i);
+  pagContainer.innerHTML = startBtnsMarkup;
+
+  const pagBtnsContainer = document.querySelector('.pag-btns-container');
+
+  let btnsArray = [];
+  let current_page = startPage;
+  let firstPage = startPage;
+  let lastPage = pagesShown;
+
+  function createBtnsArray(value) {
+    for (let i = 1; i <= value; i += 1) {
+      btnsArray.push(i);
     }
-    return pagBtnsArray;
+    return btnsArray;
   }
 
-  makeBtnsArray(totalPages);
+  createBtnsArray(totalPages);
 
-  const pagBtnsMarkup = pagBtnsArray
-    .map(
-      btn =>
-        `<div class="pag-btn unvisible" data-action="listPage">${btn}</div>`
-    )
-    .join('');
+  const numberedBtnsContainer = document.querySelector('.pag-btns-container');
 
-  const paginationMarkup =
-    startBtnMarkup +
-    moveLeftBtnMarkup +
-    firstBtnMarkup +
-    pagBtnsMarkup +
-    moveRightBtnMarkup +
-    endBtnMarkup;
+  function appendPagBtnsMarkup(array, counter, page) {
+    pagBtnsContainer.innerHTML = '';
+    page--;
+    let btnsMarkup = '';
 
-  pagContainer.innerHTML = paginationMarkup;
+    let start = counter * page;
+    let end = start + counter;
+    let btnsToRender = array.slice(start, end);
 
-  const numberedBtns = document.querySelectorAll('[data-action="listPage"]');
-  //   console.log(numberedBtns);
+    for (let i = 0; i < btnsToRender.length; i += 1) {
+      let btn = array[i];
+      let btnMarkup = `<div class="pag-btn numbered-peg-btn data-action="listPage">${btn}</div>`;
 
-  for (let i = 0; i < pagesShown; i += 1) {
-    numberedBtns[i].classList.remove('unvisible');
+      numberedBtnsContainer.insertAdjacentHTML('beforeend', btnMarkup);
+
+      const numberedBtnsArray = document.querySelectorAll('.numbered-peg-btn');
+
+      numberedBtnsArray[0].classList.add('pag-btn-active');
+    }
   }
 
-  pagContainer.addEventListener('click', onBtnClick);
+  appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
 
-  const perPageCounter = totalPages / pagesShown;
-  console.log(perPageCounter);
+  pagBtnsContainer.addEventListener('click', onBtnClick);
 
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
-  //
   function onBtnClick(evt) {
-    console.log(numberedBtns);
-    if (!evt.target.classList.contains('pag-btn')) return;
-    if (evt.target.classList.contains('pag-btn-active')) return;
-
     const activeBtn = document.querySelector('.pag-btn-active');
 
-    if (
-      evt.target.classList.contains('to-start') ||
-      evt.target.classList.contains('move-left') ||
-      evt.target.classList.contains('move-right') ||
-      evt.target.classList.contains('to-end')
-    ) {
-      return;
-    } else {
-      activeBtn.classList.remove('pag-btn-active');
-      evt.target.classList.add('pag-btn-active');
-    }
+    if (!evt.target.classList.contains('pag-btn')) return;
+
+    activeBtn.classList.remove('pag-btn-active');
+    evt.target.classList.add('pag-btn-active');
   }
 }
 
-createPagination(20, 5);
+createPagination(20, 5, 1);

@@ -34,6 +34,5 @@ export default class pagination {
 }
 
 function onBtnClick(evt) {
-    if (evt.target.classList.contains('pag-btn-active')) return;
-    if (evt.target.class)
+  if (evt.target.classList.contains('pag-btn-active')) return;
 }
