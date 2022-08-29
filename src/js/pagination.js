@@ -1,7 +1,7 @@
 const pagContainer = document.querySelector('.pag-container');
 
 function createPagination(totalPages, pagesShown) {
-  const startBtnsMarkup = `<div class="left-controls-container"><div class="left-control-btn to-start">На початок</div><div id="${pagesShown}" class="left-control-btn move-left">...</div></div><div class="pag-btns-container"></div><div class="right-controls-container"><div id="${pagesShown}" class="right-control-btn move-right">...</div><div class="right-control-btn to-end">В кінець</div></div>`;
+  const startBtnsMarkup = `<div class="left-controls-container"><div class="to-start">На початок</div><div class="move-left">...</div></div><div class="pag-btns-container"></div><div class="right-controls-container"><div class="move-right">...</div><div class="to-end">В кінець</div></div>`;
 
   pagContainer.innerHTML = startBtnsMarkup;
 
