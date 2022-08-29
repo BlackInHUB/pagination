@@ -12,6 +12,11 @@
     margin-right: 5px;
 }
 
+.right-controls-container,
+.letft-controls-container {
+    display: flex;
+}
+
 .pag-btn {
     padding: 10px 15px;
     font-weight: bold;
