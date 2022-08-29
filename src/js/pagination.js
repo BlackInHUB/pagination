@@ -1,7 +1,16 @@
 const pagContainer = document.querySelector('.pag-container');
 
 function createPagination(totalPages, pagesShown) {
-  const startBtnsMarkup = `<div class="left-controls-container"><div class="to-start">На початок</div><div class="move-left">...</div></div><div class="pag-btns-container"></div><div class="right-controls-container"><div class="move-right">...</div><div class="to-end">В кінець</div></div>`;
+  const startBtnsMarkup = `<div class="left-controls-container">
+      <div class="to-start">На початок</div>
+      <div class="move-left">...</div>
+  </div>
+  <div class="pag-btns-container">
+  </div>
+  <div class="right-controls-container">
+      <div class="move-right">...</div>
+      <div class="to-end">В кінець</div>
+  </div>`;
 
   pagContainer.innerHTML = startBtnsMarkup;
 
@@ -17,7 +26,7 @@ function createPagination(totalPages, pagesShown) {
   moveLeftBtn.classList.add('unvisible');
   toStartBtn.classList.add('unvisible');
 
-  pagBtnsContainer.addEventListener('click', onBtnClick);
+  pagBtnsContainer.addEventListener('click', onPagBtnClick);
 
   function createBtnsArray(value) {
     let array = [];
@@ -32,35 +41,44 @@ function createPagination(totalPages, pagesShown) {
     moveRightBtn.classList.add('unvisible');
   }
 
-  function appendStartPagBtnsMarkup(btnsArray, pagesShown, start) {
+  function appendPagBtnsMarkup(btnsArray, pagesShown, start) {
     pagBtnsContainer.innerHTML = '';
 
     let end = start + pagesShown;
     let btnsToRender = btnsArray.slice(start, end);
 
     const btnsMarkup = btnsToRender
-      .map(
-        btn =>
-          `<div class="pag-btn numbered-peg-btn data-action="listPage">${btn}</div>`
-      )
+      .map(btn => `<div class="pag-btn data-action="listPage">${btn}</div>`)
       .join('');
 
     pagBtnsContainer.innerHTML = btnsMarkup;
 
-    const numberedBtnsArray = document.querySelectorAll('.numbered-peg-btn');
+    const numberedBtnsArray = document.querySelectorAll('.pag-btn');
 
     numberedBtnsArray[0].classList.add('pag-btn-active');
   }
 
-  appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
+  appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
 
-  function onBtnClick(evt) {
-    const activeBtn = document.querySelector('.pag-btn-active');
+  // function appendControlBtnsMarkup(btnsArray, pagesShown, start) {
+  //   pagBtnsContainer.innerHTML = '';
 
+  //   let end = start + pagesShown;
+  //   let btnsToRender = btnsArray.slice(start, end);
+
+  //   const btnsMarkup = btnsToRender
+  //     .map(btn => `<div class="pag-btn data-action="listPage">${btn}</div>`)
+  //     .join('');
+
+  //   pagBtnsContainer.innerHTML = btnsMarkup;
+  // }
+
+  function onPagBtnClick(evt) {
     if (!evt.target.classList.contains('pag-btn')) return;
 
-    activeBtn.classList.remove('pag-btn-active');
     evt.target.classList.add('pag-btn-active');
+    const activeBtn = document.querySelector('.pag-btn-active');
+    activeBtn.classList.remove('pag-btn-active');
   }
 
   moveRightBtn.addEventListener('click', onMoveRightBtnClick);
@@ -82,8 +100,7 @@ function createPagination(totalPages, pagesShown) {
       toEndBtn.classList.add('unvisible');
     }
 
-    appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
-    console.log(current_page);
+    appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
   }
 
   function onMoveLeftBtnClick() {
@@ -99,7 +116,7 @@ function createPagination(totalPages, pagesShown) {
       toStartBtn.classList.add('unvisible');
     }
 
-    appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
+    appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
   }
 
   toEndBtn.addEventListener('click', function () {
@@ -110,7 +127,7 @@ function createPagination(totalPages, pagesShown) {
     toEndBtn.classList.add('unvisible');
     moveRightBtn.classList.add('unvisible');
 
-    appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
+    appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
   });
 
   toStartBtn.addEventListener('click', function () {
@@ -120,7 +137,7 @@ function createPagination(totalPages, pagesShown) {
     moveLeftBtn.classList.add('unvisible');
     toEndBtn.classList.remove('unvisible');
     moveRightBtn.classList.remove('unvisible');
-    appendStartPagBtnsMarkup(btnsArray, pagesShown, current_page);
+    appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
   });
 }
 
