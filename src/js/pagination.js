@@ -2,14 +2,14 @@ const pagContainer = document.querySelector('.pag-container');
 
 function createPagination(totalPages, pagesShown) {
   const startBtnsMarkup = `<div class="left-controls-container">
-      <div class="to-start">На початок</div>
+      <div class="to-start">Start</div>
       <div class="move-left">...</div>
   </div>
   <div class="pag-btns-container">
   </div>
   <div class="right-controls-container">
       <div class="move-right">...</div>
-      <div class="to-end">В кінець</div>
+      <div class="to-end">End</div>
   </div>`;
 
   pagContainer.innerHTML = startBtnsMarkup;
@@ -60,24 +60,13 @@ function createPagination(totalPages, pagesShown) {
 
   appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
 
-  // function appendControlBtnsMarkup(btnsArray, pagesShown, start) {
-  //   pagBtnsContainer.innerHTML = '';
-
-  //   let end = start + pagesShown;
-  //   let btnsToRender = btnsArray.slice(start, end);
-
-  //   const btnsMarkup = btnsToRender
-  //     .map(btn => `<div class="pag-btn data-action="listPage">${btn}</div>`)
-  //     .join('');
-
-  //   pagBtnsContainer.innerHTML = btnsMarkup;
-  // }
-
   function onPagBtnClick(evt) {
-    if (!evt.target.classList.contains('pag-btn')) return;
+    const activeBtn = document.querySelector('.pag-btn-active');
+
+    if (evt.target.classList.contains('pag-btn-active')) return;
 
     evt.target.classList.add('pag-btn-active');
-    const activeBtn = document.querySelector('.pag-btn-active');
+
     activeBtn.classList.remove('pag-btn-active');
   }
 
