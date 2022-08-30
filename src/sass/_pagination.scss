@@ -1,19 +1,31 @@
-.section {
-    padding-top: 40px;
+section {
+    margin-top: 100px;
+}
+
+//MOBILE
+
+@media screen and (max-width: 767px) {
+
+    .to-end,
+    .to-start {
+        display: none;
+    }
+
 }
 
 .pag-container {
     display: flex;
     justify-content: center;
+    margin-bottom: 60px;
 }
 
 .pag-btns-container {
     display: flex;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
 .left-controls-container {
-    margin-right: 5px;
+    margin-right: 10px;
 }
 
 .move-left {
@@ -34,11 +46,21 @@
 .move-left,
 .move-right,
 .pag-btn {
-    padding: 10px 15px;
-    font-weight: bold;
-    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 40px;
+    height: 40px;
+    // padding: 12px 12px;
+    font-size: 12px;
+    line-height: 1.33;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.move-left,
+.move-right {
+    background-color: #f7f7f7;
 }
 
 .pag-btn:not(:last-child) {
@@ -48,7 +70,7 @@
 .pag-btn-active {
     color: white;
     border-color: transparent;
-    background-color: orangered;
+    background-color: #FF6B02;
 }
 
 .unvisible {

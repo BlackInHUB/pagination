@@ -1,15 +1,19 @@
 const pagContainer = document.querySelector('.pag-container');
 
 function createPagination(totalPages, pagesShown) {
+  if (totalPages <= 1) {
+    return;
+  }
+
   const startBtnsMarkup = `<div class="left-controls-container">
-      <div class="to-start">Start</div>
-      <div class="move-left">...</div>
+      <div id="1" class="to-start"></div>
+      <div id="1" class="move-left">...</div>
   </div>
   <div class="pag-btns-container">
   </div>
   <div class="right-controls-container">
-      <div class="move-right">...</div>
-      <div class="to-end">End</div>
+      <div id=${pagesShown + 1} class="move-right">...</div>
+      <div id="" class="to-end"></div>
   </div>`;
 
   pagContainer.innerHTML = startBtnsMarkup;
@@ -21,12 +25,14 @@ function createPagination(totalPages, pagesShown) {
   const toStartBtn = document.querySelector('.to-start');
   const toEndBtn = document.querySelector('.to-end');
 
-  let current_page = 0;
-
   moveLeftBtn.classList.add('unvisible');
   toStartBtn.classList.add('unvisible');
 
   pagBtnsContainer.addEventListener('click', onPagBtnClick);
+  moveRightBtn.addEventListener('click', onMoveRightBtnClick);
+  moveLeftBtn.addEventListener('click', onMoveLeftBtnClick);
+  toStartBtn.addEventListener('click', onStartBtnClick);
+  toEndBtn.addEventListener('click', onEndBtnClick);
 
   function createBtnsArray(value) {
     let array = [];
@@ -39,23 +45,31 @@ function createPagination(totalPages, pagesShown) {
   const btnsArray = createBtnsArray(totalPages);
   if (btnsArray.length <= pagesShown) {
     moveRightBtn.classList.add('unvisible');
+    toEndBtn.classList.add('unvisible');
   }
+
+  toEndBtn.id = btnsArray.length - pagesShown + 1;
+  toEndBtn.textContent = `${btnsArray.length + 1 - pagesShown}-${
+    btnsArray.length
+  }`;
+  toStartBtn.textContent = `${btnsArray[0]}-${btnsArray[pagesShown - 1]}`;
+
+  let current_page = 0;
 
   function appendPagBtnsMarkup(btnsArray, pagesShown, start) {
     pagBtnsContainer.innerHTML = '';
 
     let end = start + pagesShown;
     let btnsToRender = btnsArray.slice(start, end);
-
     const btnsMarkup = btnsToRender
-      .map(btn => `<div class="pag-btn data-action="listPage">${btn}</div>`)
+      .map(btn => `<div id="${btn}" class="pag-btn">${btn}</div>`)
       .join('');
 
     pagBtnsContainer.innerHTML = btnsMarkup;
 
-    const numberedBtnsArray = document.querySelectorAll('.pag-btn');
+    const pagBtnsArray = document.querySelectorAll('.pag-btn');
 
-    numberedBtnsArray[0].classList.add('pag-btn-active');
+    pagBtnsArray[0].classList.add('pag-btn-active');
   }
 
   appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
@@ -66,12 +80,8 @@ function createPagination(totalPages, pagesShown) {
     if (evt.target.classList.contains('pag-btn-active')) return;
 
     evt.target.classList.add('pag-btn-active');
-
     activeBtn.classList.remove('pag-btn-active');
   }
-
-  moveRightBtn.addEventListener('click', onMoveRightBtnClick);
-  moveLeftBtn.addEventListener('click', onMoveLeftBtnClick);
 
   function onMoveRightBtnClick() {
     toStartBtn.classList.remove('unvisible');
@@ -89,6 +99,9 @@ function createPagination(totalPages, pagesShown) {
       toEndBtn.classList.add('unvisible');
     }
 
+    moveRightBtn.id = parseInt(moveRightBtn.id) + pagesShown;
+    moveLeftBtn.id = moveRightBtn.id - pagesShown;
+
     appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
   }
 
@@ -105,21 +118,13 @@ function createPagination(totalPages, pagesShown) {
       toStartBtn.classList.add('unvisible');
     }
 
+    moveLeftBtn.id = parseInt(moveLeftBtn.id) - pagesShown;
+    moveRightBtn.id = parseInt(moveRightBtn.id) - pagesShown;
+
     appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
   }
 
-  toEndBtn.addEventListener('click', function () {
-    current_page = btnsArray.length - pagesShown;
-
-    toStartBtn.classList.remove('unvisible');
-    moveLeftBtn.classList.remove('unvisible');
-    toEndBtn.classList.add('unvisible');
-    moveRightBtn.classList.add('unvisible');
-
-    appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
-  });
-
-  toStartBtn.addEventListener('click', function () {
+  function onStartBtnClick() {
     current_page = 0;
 
     toStartBtn.classList.add('unvisible');
@@ -127,7 +132,27 @@ function createPagination(totalPages, pagesShown) {
     toEndBtn.classList.remove('unvisible');
     moveRightBtn.classList.remove('unvisible');
     appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
-  });
+    moveRightBtn.id = 1;
+    moveLeftBtn.id = 1;
+  }
+
+  function onEndBtnClick() {
+    current_page = btnsArray.length - pagesShown;
+
+    toStartBtn.classList.remove('unvisible');
+    moveLeftBtn.classList.remove('unvisible');
+    toEndBtn.classList.add('unvisible');
+    moveRightBtn.classList.add('unvisible');
+
+    moveLeftBtn.id = parseInt(btnsArray.length) - pagesShown + 1;
+    moveRightBtn.id = parseInt(moveLeftBtn.id) + pagesShown;
+
+    appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
+  }
 }
 
-createPagination(22, 5);
+function clearPagContainer() {
+  pagContainer.innerHTML = '';
+}
+
+createPagination(100, 5);
