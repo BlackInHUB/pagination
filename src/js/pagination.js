@@ -12,7 +12,7 @@ function createPagination(totalPages, pagesShown) {
   <div class="pag-btns-container">
   </div>
   <div class="right-controls-container">
-      <div id=${pagesShown + 1} class="move-right">...</div>
+      <div id="1" class="move-right">...</div>
       <div id="" class="to-end"></div>
   </div>`;
 
@@ -48,7 +48,6 @@ function createPagination(totalPages, pagesShown) {
     toEndBtn.classList.add('unvisible');
   }
 
-  toEndBtn.id = btnsArray.length - pagesShown + 1;
   toEndBtn.textContent = `${btnsArray.length + 1 - pagesShown}-${
     btnsArray.length
   }`;
@@ -100,7 +99,11 @@ function createPagination(totalPages, pagesShown) {
     }
 
     moveRightBtn.id = parseInt(moveRightBtn.id) + pagesShown;
-    moveLeftBtn.id = moveRightBtn.id - pagesShown;
+    moveLeftBtn.id = moveRightBtn.id;
+
+    if (parseInt(moveRightBtn.id) + pagesShown > btnsArray.length) {
+      toEndBtn.classList.add('unvisible');
+    }
 
     appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
   }
@@ -119,7 +122,7 @@ function createPagination(totalPages, pagesShown) {
     }
 
     moveLeftBtn.id = parseInt(moveLeftBtn.id) - pagesShown;
-    moveRightBtn.id = parseInt(moveRightBtn.id) - pagesShown;
+    moveRightBtn.id = moveLeftBtn.id;
 
     appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
   }
@@ -138,14 +141,13 @@ function createPagination(totalPages, pagesShown) {
 
   function onEndBtnClick() {
     current_page = btnsArray.length - pagesShown;
-
     toStartBtn.classList.remove('unvisible');
     moveLeftBtn.classList.remove('unvisible');
     toEndBtn.classList.add('unvisible');
     moveRightBtn.classList.add('unvisible');
-
+    toEndBtn.id = btnsArray.length - pagesShown + 1;
     moveLeftBtn.id = parseInt(btnsArray.length) - pagesShown + 1;
-    moveRightBtn.id = parseInt(moveLeftBtn.id) + pagesShown;
+    moveRightBtn.id = parseInt(moveLeftBtn.id) + 1;
 
     appendPagBtnsMarkup(btnsArray, pagesShown, current_page);
   }
